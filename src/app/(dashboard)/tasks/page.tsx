@@ -1,47 +1,243 @@
 'use client';
 
-import React from 'react';
-import { CheckSquare, Sparkles, Plus, Clock } from 'lucide-react';
+import React, { useEffect } from 'react';
+import {
+  CheckSquare,
+  Plus,
+  LayoutGrid,
+  List,
+  Filter,
+  Search,
+  Clock,
+  Sparkles,
+  CheckCircle2,
+  AlertCircle,
+} from 'lucide-react';
+import { useTaskStore } from '@/lib/store/task-store';
+import { useCategoryStore } from '@/lib/store/category-store';
+import { KanbanBoard } from '@/components/tasks/KanbanBoard';
+import { TaskListView } from '@/components/tasks/TaskListView';
+import { TaskModal } from '@/components/tasks/TaskModal';
 
 export default function TasksPage() {
+  const {
+    tasks,
+    viewMode,
+    activeTab,
+    selectedCategoryFilter,
+    searchQuery,
+    setViewMode,
+    setActiveTab,
+    setSelectedCategoryFilter,
+    setSearchQuery,
+    openCreateTaskModal,
+    loadTasks,
+  } = useTaskStore();
+
+  const { categories, loadCategories } = useCategoryStore();
+
+  useEffect(() => {
+    loadTasks();
+    loadCategories();
+  }, [loadTasks, loadCategories]);
+
+  // Apply filters to tasks list
+  const filteredTasks = tasks.filter((task) => {
+    // Search query
+    if (
+      searchQuery &&
+      !task.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      !task.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    ) {
+      return false;
+    }
+
+    // Category filter
+    if (selectedCategoryFilter && task.category_id !== selectedCategoryFilter) {
+      return false;
+    }
+
+    // Tab filter
+    if (activeTab === 'today') {
+      if (!task.due_date) return false;
+      const todayStr = new Date().toISOString().split('T')[0];
+      const taskDateStr = task.due_date.split('T')[0];
+      return taskDateStr <= todayStr && task.status !== 'done';
+    }
+
+    if (activeTab === 'completed') {
+      return task.status === 'done';
+    }
+
+    return true;
+  });
+
+  // Calculate metrics
+  const totalTasks = tasks.length;
+  const completedCount = tasks.filter((t) => t.status === 'done').length;
+  const inProgressCount = tasks.filter((t) => t.status === 'in_progress').length;
+  const pendingCount = tasks.filter((t) => t.status === 'todo').length;
+
   return (
-    <div className="max-w-7xl mx-auto space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
+    <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
+      {/* Top Header & New Task Trigger */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-2">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Phase 2 — Task Engine & dnd-kit Kanban Board Active</span>
+          </div>
           <h1 className="text-3xl font-extrabold text-white tracking-tight">Task Management</h1>
           <p className="text-xs text-slate-400">
-            Phase 2 target: Kanban drag-and-drop board, checklists, priorities & study topic linking.
+            Organize tasks by status, priority, and link directly to your Study Domains.
           </p>
         </div>
-        <div className="px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Scheduled for Phase 2</span>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={openCreateTaskModal}
+            className="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New Task</span>
+          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {['To Do', 'In Progress', 'Completed'].map((status, idx) => (
-          <div key={status} className="p-4 rounded-2xl glass-panel border border-slate-800 space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
-                <span>{status}</span>
-              </h3>
-              <span className="text-xs text-slate-500 font-mono">{idx * 2 + 1}</span>
-            </div>
-
-            <div className="space-y-2">
-              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-xs space-y-1">
-                <p className="font-semibold text-slate-200">Implement RAG Vector Store</p>
-                <div className="flex items-center justify-between text-[10px] text-slate-400">
-                  <span className="text-indigo-400">AI Domain</span>
-                  <span className="flex items-center gap-1"><Clock className="w-3 h-3"/> Today</span>
-                </div>
-              </div>
-            </div>
+      {/* Metrics Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-5 rounded-2xl glass-panel border border-slate-800 space-y-2">
+          <div className="flex items-center justify-between text-xs text-slate-400">
+            <span>Total Tasks</span>
+            <CheckSquare className="w-4 h-4 text-indigo-400" />
           </div>
-        ))}
+          <p className="text-2xl font-extrabold text-white">{totalTasks}</p>
+        </div>
+
+        <div className="p-5 rounded-2xl glass-panel border border-slate-800 space-y-2">
+          <div className="flex items-center justify-between text-xs text-slate-400">
+            <span>In Progress</span>
+            <Clock className="w-4 h-4 text-cyan-400" />
+          </div>
+          <p className="text-2xl font-extrabold text-cyan-400">{inProgressCount}</p>
+        </div>
+
+        <div className="p-5 rounded-2xl glass-panel border border-slate-800 space-y-2">
+          <div className="flex items-center justify-between text-xs text-slate-400">
+            <span>Pending To-Do</span>
+            <AlertCircle className="w-4 h-4 text-amber-400" />
+          </div>
+          <p className="text-2xl font-extrabold text-amber-400">{pendingCount}</p>
+        </div>
+
+        <div className="p-5 rounded-2xl glass-panel border border-slate-800 space-y-2">
+          <div className="flex items-center justify-between text-xs text-slate-400">
+            <span>Completed</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          </div>
+          <p className="text-2xl font-extrabold text-emerald-400">{completedCount}</p>
+        </div>
       </div>
+
+      {/* Controls Bar: Search, Category Filter, Tabs & View Switcher */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 p-4 rounded-2xl glass-panel border border-slate-800">
+        {/* Left: Tab Filters */}
+        <div className="flex items-center gap-1.5 p-1 bg-slate-900/80 rounded-xl border border-slate-800 text-xs">
+          <button
+            onClick={() => setActiveTab('all')}
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
+              activeTab === 'all'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            All Tasks ({totalTasks})
+          </button>
+          <button
+            onClick={() => setActiveTab('today')}
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
+              activeTab === 'today'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            Today / Due Soon
+          </button>
+          <button
+            onClick={() => setActiveTab('completed')}
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
+              activeTab === 'completed'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            Completed ({completedCount})
+          </button>
+        </div>
+
+        {/* Middle: Category Domain Filter & Search */}
+        <div className="flex items-center gap-3 flex-1 max-w-md">
+          {/* Category Dropdown */}
+          <select
+            value={selectedCategoryFilter || ''}
+            onChange={(e) => setSelectedCategoryFilter(e.target.value || null)}
+            className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 shrink-0"
+          >
+            <option value="">All Study Domains</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+
+          {/* Quick Search */}
+          <div className="relative flex-1">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search tasks..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-8 pr-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+
+        {/* Right: View Switcher (Kanban vs List) */}
+        <div className="flex items-center gap-1 p-1 bg-slate-900/80 rounded-xl border border-slate-800 text-xs shrink-0">
+          <button
+            onClick={() => setViewMode('kanban')}
+            className={`p-1.5 rounded-lg transition-colors flex items-center gap-1.5 font-medium ${
+              viewMode === 'kanban' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+            }`}
+            title="Kanban Board View"
+          >
+            <LayoutGrid className="w-4 h-4" />
+            <span className="hidden sm:inline">Board</span>
+          </button>
+          <button
+            onClick={() => setViewMode('list')}
+            className={`p-1.5 rounded-lg transition-colors flex items-center gap-1.5 font-medium ${
+              viewMode === 'list' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'
+            }`}
+            title="List Table View"
+          >
+            <List className="w-4 h-4" />
+            <span className="hidden sm:inline">List</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Main View Display */}
+      {viewMode === 'kanban' ? (
+        <KanbanBoard tasks={filteredTasks} />
+      ) : (
+        <TaskListView tasks={filteredTasks} />
+      )}
+
+      {/* Task Creation & Edit Modal */}
+      <TaskModal />
     </div>
   );
 }

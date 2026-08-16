@@ -1,8 +1,7 @@
 'use client';
 
-import React, { use } from 'react';
+import React, { use, useEffect } from 'react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import {
   Folder,
   Plus,
@@ -16,8 +15,12 @@ import {
   Sparkles,
   Layers,
   ChevronRight,
+  CheckCircle2,
+  Circle,
+  Clock,
 } from 'lucide-react';
 import { useCategoryStore } from '@/lib/store/category-store';
+import { useTaskStore } from '@/lib/store/task-store';
 import { DynamicIcon } from '@/components/common/IconPicker';
 import { deleteCategory } from '@/lib/supabase/db';
 
@@ -26,6 +29,12 @@ export default function StudyCategoryPage({ params }: { params: Promise<{ catego
   const slug = resolvedParams.category;
 
   const { categories, openCreateModal, openEditModal, loadCategories } = useCategoryStore();
+  const { tasks, loadTasks, moveTask, openCreateTaskModal } = useTaskStore();
+
+  useEffect(() => {
+    loadCategories();
+    loadTasks();
+  }, [loadCategories, loadTasks]);
 
   const currentCategory = categories.find((c) => c.slug === slug);
   const subCategories = categories.filter((c) => c?.parent_id === currentCategory?.id);
@@ -48,6 +57,13 @@ export default function StudyCategoryPage({ params }: { params: Promise<{ catego
       </div>
     );
   }
+
+  // Linked tasks for this domain
+  const domainTasks = tasks.filter((t) => t.category_id === currentCategory.id);
+  const totalDomainTasks = domainTasks.length;
+  const completedDomainTasks = domainTasks.filter((t) => t.status === 'done').length;
+  const progressPercent =
+    totalDomainTasks > 0 ? Math.round((completedDomainTasks / totalDomainTasks) * 100) : 0;
 
   const handleDelete = async () => {
     if (confirm(`Are you sure you want to delete "${currentCategory.name}"?`)) {
@@ -132,16 +148,21 @@ export default function StudyCategoryPage({ params }: { params: Promise<{ catego
           </button>
         </div>
 
-        {/* Progress Gauge */}
+        {/* Progress Gauge Rollup */}
         <div className="pt-4 border-t border-slate-800/80 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
-            <span className="text-[11px] text-slate-400 font-medium uppercase">Overall Progress</span>
+            <span className="text-[11px] text-slate-400 font-medium uppercase">Domain Task Progress</span>
             <div className="mt-1 flex items-baseline justify-between">
-              <span className="text-xl font-bold text-white">45%</span>
-              <span className="text-xs text-indigo-400">9 / 20 tasks</span>
+              <span className="text-xl font-bold text-white">{progressPercent}%</span>
+              <span className="text-xs text-indigo-400">
+                {completedDomainTasks} / {totalDomainTasks} tasks done
+              </span>
             </div>
             <div className="mt-2 w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-              <div className="h-full bg-indigo-500 rounded-full w-[45%]" />
+              <div
+                className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full transition-all duration-300"
+                style={{ width: `${progressPercent}%` }}
+              />
             </div>
           </div>
 
@@ -161,6 +182,89 @@ export default function StudyCategoryPage({ params }: { params: Promise<{ catego
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Linked Tasks Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CheckSquare className="w-5 h-5 text-indigo-400" />
+            <h2 className="text-lg font-bold text-white">Domain Tasks ({totalDomainTasks})</h2>
+          </div>
+          <button
+            onClick={openCreateTaskModal}
+            className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-indigo-600/30 transition-all"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>Add Task to {currentCategory.name}</span>
+          </button>
+        </div>
+
+        {domainTasks.length > 0 ? (
+          <div className="rounded-2xl glass-panel border border-slate-800 divide-y divide-slate-800/80">
+            {domainTasks.map((task) => {
+              const isDone = task.status === 'done';
+              return (
+                <div
+                  key={task.id}
+                  className="p-4 flex items-center justify-between gap-4 hover:bg-slate-800/40 transition-colors"
+                >
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <button
+                      onClick={() => moveTask(task.id, isDone ? 'todo' : 'done')}
+                      className="text-slate-500 hover:text-indigo-400 transition-colors shrink-0"
+                    >
+                      {isDone ? (
+                        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                      ) : (
+                        <Circle className="w-5 h-5 text-slate-500" />
+                      )}
+                    </button>
+                    <div className="min-w-0">
+                      <p
+                        className={`text-xs font-semibold text-white truncate ${
+                          isDone ? 'line-through text-slate-400' : ''
+                        }`}
+                      >
+                        {task.title}
+                      </p>
+                      {task.description && (
+                        <p className="text-[11px] text-slate-400 truncate max-w-md">
+                          {task.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="px-2 py-0.5 rounded-md text-[10px] uppercase font-semibold bg-slate-800 text-slate-400">
+                      {task.priority}
+                    </span>
+                    {task.due_date && (
+                      <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-slate-500" />
+                        <span>{new Date(task.due_date).toLocaleDateString()}</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="p-6 text-center rounded-2xl bg-slate-900/40 border border-slate-800 space-y-2">
+            <p className="text-xs text-slate-400">
+              No tasks currently assigned to "{currentCategory.name}".
+            </p>
+            <button
+              onClick={openCreateTaskModal}
+              className="text-xs text-indigo-400 hover:underline font-medium inline-flex items-center gap-1"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Create first task for this domain</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Nested Sub-Categories Section */}

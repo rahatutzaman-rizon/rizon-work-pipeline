@@ -30,6 +30,42 @@ export interface CategoryNode extends Category {
   document_count?: number;
 }
 
+export type TaskStatus = 'todo' | 'in_progress' | 'review' | 'done';
+export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
+
+export interface TaskChecklist {
+  id: string;
+  task_id: string;
+  title: string;
+  is_completed: boolean;
+  created_at?: string;
+}
+
+export interface Tag {
+  id: string;
+  name: string;
+  color: string;
+}
+
+export interface Task {
+  id: string;
+  user_id: string;
+  category_id: string | null;
+  study_topic_id: string | null;
+  project_id?: string | null;
+  title: string;
+  description: string | null;
+  status: TaskStatus;
+  priority: TaskPriority;
+  due_date: string | null;
+  estimated_minutes: number;
+  completed_at: string | null;
+  checklists?: TaskChecklist[];
+  tags?: string[];
+  created_at: string;
+  updated_at: string;
+}
+
 export interface StudyTopic {
   id: string;
   user_id: string;
@@ -38,7 +74,7 @@ export interface StudyTopic {
   slug: string;
   description: string | null;
   stage: 'not_started' | 'learning' | 'practicing' | 'mastered';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
+  priority: TaskPriority;
   target_date: string | null;
   created_at: string;
   updated_at: string;
