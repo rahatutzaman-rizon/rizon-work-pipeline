@@ -280,11 +280,16 @@ export async function updateTaskStatus(id: string, newStatus: TaskStatus): Promi
  */
 export async function updateTask(id: string, updates: Partial<Task>): Promise<Task> {
   const now = new Date().toISOString();
-  const formattedUpdates = {
+  const formattedUpdates: Partial<Task> = {
     ...updates,
     updated_at: now,
-    completed_at: updates.status === 'done' ? now : updates.status ? null : undefined,
   };
+
+  if (updates.status === 'done') {
+    formattedUpdates.completed_at = now;
+  } else if (updates.status) {
+    formattedUpdates.completed_at = null;
+  }
 
   if (isSupabaseConfigured()) {
     try {
