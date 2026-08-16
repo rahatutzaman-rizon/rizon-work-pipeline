@@ -135,6 +135,8 @@ export async function fetchTasks(filter?: {
   categoryId?: string;
   priority?: TaskPriority;
 }): Promise<Task[]> {
+  let tasks: Task[] = [];
+
   if (isSupabaseConfigured()) {
     try {
       const supabase = createClient();
@@ -145,15 +147,19 @@ export async function fetchTasks(filter?: {
       if (filter?.priority) query = query.eq('priority', filter.priority);
 
       const { data, error } = await query;
-      if (!error && data) {
-        return data as Task[];
+      if (!error && data && data.length > 0) {
+        tasks = data as Task[];
+      } else {
+        tasks = getLocalTasks();
       }
     } catch (e) {
       console.warn('Supabase task fetch failed, using local store:', e);
+      tasks = getLocalTasks();
     }
+  } else {
+    tasks = getLocalTasks();
   }
 
-  let tasks = getLocalTasks();
   if (filter?.status) {
     tasks = tasks.filter((t) => t.status === filter.status);
   }
@@ -190,16 +196,18 @@ export async function createTask(input: {
     is_completed: item.is_completed || false,
   }));
 
+  const formattedDueDate = input.due_date && input.due_date.trim() ? input.due_date : null;
+
   const newTask: Task = {
     id: taskId,
-    user_id: 'default-user',
+    user_id: '00000000-0000-0000-0000-000000000000',
     category_id: input.category_id || null,
     study_topic_id: null,
     title: input.title.trim(),
     description: input.description?.trim() || null,
     status: input.status || 'todo',
     priority: input.priority || 'medium',
-    due_date: input.due_date || null,
+    due_date: formattedDueDate,
     estimated_minutes: input.estimated_minutes || 30,
     completed_at: input.status === 'done' ? now : null,
     checklists: formattedChecklists,
@@ -212,9 +220,10 @@ export async function createTask(input: {
     try {
       const supabase = createClient();
       const { data: authData } = await supabase.auth.getUser();
-      const currentUserId = authData?.user?.id;
+      const currentUserId = authData?.user?.id || '00000000-0000-0000-0000-000000000000';
 
       const payload: Record<string, any> = {
+        user_id: currentUserId,
         category_id: newTask.category_id,
         title: newTask.title,
         description: newTask.description,
@@ -224,11 +233,12 @@ export async function createTask(input: {
         estimated_minutes: newTask.estimated_minutes,
         completed_at: newTask.completed_at,
       };
-      if (currentUserId) payload.user_id = currentUserId;
 
       const { data, error } = await supabase.from('tasks').insert([payload]).select().single();
-      if (!error && data) {
-        return { ...newTask, id: data.id };
+      if (error) {
+        console.warn('Supabase task insert warning:', error.message);
+      } else if (data) {
+        newTask.id = data.id;
       }
     } catch (e) {
       console.warn('Supabase task insert failed, using local store:', e);

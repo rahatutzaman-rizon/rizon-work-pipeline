@@ -1,7 +1,8 @@
 'use client';
 
-import React, { use, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import {
   Folder,
   Plus,
@@ -24,9 +25,9 @@ import { useTaskStore } from '@/lib/store/task-store';
 import { DynamicIcon } from '@/components/common/IconPicker';
 import { deleteCategory } from '@/lib/supabase/db';
 
-export default function StudyCategoryPage({ params }: { params: Promise<{ category: string }> }) {
-  const resolvedParams = use(params);
-  const slug = resolvedParams.category;
+export default function StudyCategoryPage() {
+  const params = useParams();
+  const slug = (params?.category as string) || '';
 
   const { categories, openCreateModal, openEditModal, loadCategories } = useCategoryStore();
   const { tasks, loadTasks, moveTask, openCreateTaskModal } = useTaskStore();

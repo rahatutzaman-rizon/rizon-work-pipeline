@@ -115,7 +115,8 @@ CREATE POLICY "Users can manage projects" ON public.projects FOR ALL USING (auth
 -- 5. TASKS & CHECKLISTS
 CREATE TABLE IF NOT EXISTS public.tasks (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  category_id UUID REFERENCES public.categories(id) ON DELETE SET NULL,
   study_topic_id UUID REFERENCES public.study_topics(id) ON DELETE SET NULL,
   project_id UUID REFERENCES public.projects(id) ON DELETE SET NULL,
   title TEXT NOT NULL,
@@ -131,6 +132,9 @@ CREATE TABLE IF NOT EXISTS public.tasks (
 
 ALTER TABLE public.tasks ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can manage tasks" ON public.tasks FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Allow public tasks select" ON public.tasks FOR SELECT USING (true);
+CREATE POLICY "Allow public tasks insert" ON public.tasks FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow public tasks update" ON public.tasks FOR UPDATE USING (true);
 
 CREATE TABLE IF NOT EXISTS public.task_checklists (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
