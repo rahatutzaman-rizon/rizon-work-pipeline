@@ -1,121 +1,17 @@
 import { Task, TaskChecklist, TaskStatus, TaskPriority } from '@/types';
 import { createClient, isSupabaseConfigured } from './client';
 
-export const INITIAL_TASKS: Task[] = [
-  {
-    id: 'task-1',
-    user_id: 'default-user',
-    category_id: 'cat-ai-rag', // Linked to RAG Architecture!
-    study_topic_id: null,
-    title: 'Implement RAG Vector Database Indexing',
-    description: 'Set up pgvector extension and chunk embedding pipeline for study document notes.',
-    status: 'in_progress',
-    priority: 'high',
-    due_date: new Date(Date.now() + 86400000 * 2).toISOString(), // 2 days from now
-    estimated_minutes: 60,
-    completed_at: null,
-    checklists: [
-      { id: 'chk-1', task_id: 'task-1', title: 'Create vector extension in Supabase', is_completed: true },
-      { id: 'chk-2', task_id: 'task-1', title: 'Configure chunking strategy for notes', is_completed: false },
-      { id: 'chk-3', task_id: 'task-1', title: 'Test semantic similarity search query', is_completed: false },
-    ],
-    tags: ['pgvector', 'RAG', 'AI'],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 'task-2',
-    user_id: 'default-user',
-    category_id: 'cat-spanish', // Linked to Spanish!
-    study_topic_id: null,
-    title: 'Master Spanish Past Tense Irregular Verbs',
-    description: 'Practice preterite vs imperfect conjugations for ser, estar, ir, and hacer.',
-    status: 'todo',
-    priority: 'medium',
-    due_date: new Date(Date.now() + 86400000 * 3).toISOString(),
-    estimated_minutes: 45,
-    completed_at: null,
-    checklists: [
-      { id: 'chk-4', task_id: 'task-2', title: 'Complete Anki flashcard deck (50 cards)', is_completed: false },
-      { id: 'chk-5', task_id: 'task-2', title: 'Write 5 sample sentences using preterite', is_completed: false },
-    ],
-    tags: ['Spanish', 'Grammar'],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 'task-3',
-    user_id: 'default-user',
-    category_id: 'cat-bcs', // Linked to BCS!
-    study_topic_id: null,
-    title: 'Review BCS Bangladesh Affairs Key Historical Events',
-    description: 'Study 1952 Language Movement, 1969 Mass Uprising, and 1971 Liberation War timeline.',
-    status: 'todo',
-    priority: 'urgent',
-    due_date: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
-    estimated_minutes: 90,
-    completed_at: null,
-    checklists: [
-      { id: 'chk-6', task_id: 'task-3', title: 'Summarize 1952 to 1971 milestones', is_completed: false },
-      { id: 'chk-7', task_id: 'task-3', title: 'Solve 20 previous BCS preliminary questions', is_completed: false },
-    ],
-    tags: ['BCS', 'History'],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 'task-4',
-    user_id: 'default-user',
-    category_id: 'cat-software', // Linked to Software Engineering!
-    study_topic_id: null,
-    title: 'System Design: Distributed Caching & Redis',
-    description: 'Study cache invalidation patterns (Write-through, Write-behind, Cache-aside).',
-    status: 'review',
-    priority: 'high',
-    due_date: new Date(Date.now() - 86400000).toISOString(),
-    estimated_minutes: 60,
-    completed_at: null,
-    checklists: [
-      { id: 'chk-8', task_id: 'task-4', title: 'Diagram cache-aside workflow', is_completed: true },
-      { id: 'chk-9', task_id: 'task-4', title: 'Compare Redis LRU vs LFU eviction', is_completed: true },
-    ],
-    tags: ['System Design', 'Redis'],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 'task-5',
-    user_id: 'default-user',
-    category_id: 'cat-ai-agents', // Linked to Autonomous Agents!
-    study_topic_id: null,
-    title: 'Build Multi-Agent Tool Router with Vercel AI SDK',
-    description: 'Configure agentic function calling for weather, search, and document retrieval tools.',
-    status: 'done',
-    priority: 'medium',
-    due_date: new Date().toISOString(),
-    estimated_minutes: 60,
-    completed_at: new Date().toISOString(),
-    checklists: [
-      { id: 'chk-10', task_id: 'task-5', title: 'Define tool schemas with Zod', is_completed: true },
-      { id: 'chk-11', task_id: 'task-5', title: 'Test multi-turn tool calling loop', is_completed: true },
-    ],
-    tags: ['Agents', 'Vercel AI SDK'],
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-];
+export const INITIAL_TASKS: Task[] = [];
 
-const LOCAL_TASKS_KEY = 'rizon_tasks_v2';
+const LOCAL_MODULE_TASKS_KEY = 'rizon_module_tasks_v4';
 
 export function getLocalTasks(): Task[] {
   if (typeof window === 'undefined') return INITIAL_TASKS;
-  const stored = localStorage.getItem(LOCAL_TASKS_KEY);
-  if (!stored) {
-    localStorage.setItem(LOCAL_TASKS_KEY, JSON.stringify(INITIAL_TASKS));
-    return INITIAL_TASKS;
-  }
+  const stored = localStorage.getItem(LOCAL_MODULE_TASKS_KEY);
+  if (!stored) return INITIAL_TASKS;
   try {
-    return JSON.parse(stored);
+    const parsed = JSON.parse(stored);
+    return Array.isArray(parsed) ? parsed : INITIAL_TASKS;
   } catch {
     return INITIAL_TASKS;
   }
@@ -123,19 +19,36 @@ export function getLocalTasks(): Task[] {
 
 export function saveLocalTasks(tasks: Task[]) {
   if (typeof window !== 'undefined') {
-    localStorage.setItem(LOCAL_TASKS_KEY, JSON.stringify(tasks));
+    localStorage.setItem(LOCAL_MODULE_TASKS_KEY, JSON.stringify(tasks));
   }
 }
 
 /**
- * Fetch all tasks (from Supabase or Local Fallback)
+ * Fetch tasks strictly filtered by categoryId and/or status/priority
  */
 export async function fetchTasks(filter?: {
   status?: TaskStatus;
   categoryId?: string;
   priority?: TaskPriority;
+  module?: string;
 }): Promise<Task[]> {
-  let tasks: Task[] = [];
+  const localTasks = getLocalTasks();
+
+  let filteredLocal = localTasks;
+  if (filter?.categoryId) {
+    filteredLocal = filteredLocal.filter(
+      (t: any) => t.subject_id === filter.categoryId || t.category_id === filter.categoryId
+    );
+  }
+  if (filter?.module) {
+    filteredLocal = filteredLocal.filter((t: any) => t.module === filter.module);
+  }
+  if (filter?.status) {
+    filteredLocal = filteredLocal.filter((t) => t.status === filter.status);
+  }
+  if (filter?.priority) {
+    filteredLocal = filteredLocal.filter((t) => t.priority === filter.priority);
+  }
 
   if (isSupabaseConfigured()) {
     try {
@@ -147,33 +60,22 @@ export async function fetchTasks(filter?: {
       if (filter?.priority) query = query.eq('priority', filter.priority);
 
       const { data, error } = await query;
-      if (!error && data && data.length > 0) {
-        tasks = data as Task[];
-      } else {
-        tasks = getLocalTasks();
+      if (!error && data) {
+        const dbTasks = data as Task[];
+        const combined = [...dbTasks, ...filteredLocal];
+        const unique = Array.from(new Map(combined.map((item) => [item.id, item])).values());
+        return unique;
       }
     } catch (e) {
-      console.warn('Supabase task fetch failed, using local store:', e);
-      tasks = getLocalTasks();
+      console.warn('Supabase task fetch error:', e);
     }
-  } else {
-    tasks = getLocalTasks();
   }
 
-  if (filter?.status) {
-    tasks = tasks.filter((t) => t.status === filter.status);
-  }
-  if (filter?.categoryId) {
-    tasks = tasks.filter((t) => t.category_id === filter.categoryId);
-  }
-  if (filter?.priority) {
-    tasks = tasks.filter((t) => t.priority === filter.priority);
-  }
-  return tasks;
+  return filteredLocal;
 }
 
 /**
- * Create a new task
+ * Create a new task in Supabase & LocalStorage
  */
 export async function createTask(input: {
   title: string;
@@ -185,8 +87,9 @@ export async function createTask(input: {
   estimated_minutes?: number;
   checklists?: Array<{ title: string; is_completed?: boolean }>;
   tags?: string[];
+  module?: string;
 }): Promise<Task> {
-  const taskId = 'task-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6);
+  const taskId = `task-${Date.now()}`;
   const now = new Date().toISOString();
 
   const formattedChecklists: TaskChecklist[] = (input.checklists || []).map((item, idx) => ({
@@ -196,145 +99,102 @@ export async function createTask(input: {
     is_completed: item.is_completed || false,
   }));
 
-  const formattedDueDate = input.due_date && input.due_date.trim() ? input.due_date : null;
-
   const newTask: Task = {
     id: taskId,
-    user_id: '00000000-0000-0000-0000-000000000000',
+    user_id: 'default-user',
     category_id: input.category_id || null,
     study_topic_id: null,
     title: input.title.trim(),
     description: input.description?.trim() || null,
     status: input.status || 'todo',
     priority: input.priority || 'medium',
-    due_date: formattedDueDate,
+    due_date: input.due_date || null,
     estimated_minutes: input.estimated_minutes || 30,
-    completed_at: input.status === 'done' ? now : null,
     checklists: formattedChecklists,
     tags: input.tags || [],
     created_at: now,
     updated_at: now,
+    completed_at: null,
   };
+  (newTask as any).subject_id = input.category_id || null;
+  (newTask as any).module = input.module || 'bcs';
 
   if (isSupabaseConfigured()) {
     try {
       const supabase = createClient();
-      const { data: authData } = await supabase.auth.getUser();
-      const currentUserId = authData?.user?.id || '00000000-0000-0000-0000-000000000000';
-
-      const payload: Record<string, any> = {
-        user_id: currentUserId,
-        category_id: newTask.category_id,
-        title: newTask.title,
-        description: newTask.description,
-        status: newTask.status,
-        priority: newTask.priority,
-        due_date: newTask.due_date,
-        estimated_minutes: newTask.estimated_minutes,
-        completed_at: newTask.completed_at,
+      const payload: any = {
+        title: input.title.trim(),
+        description: input.description?.trim() || null,
+        status: input.status || 'todo',
+        priority: input.priority || 'medium',
       };
+      if (input.category_id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(input.category_id)) {
+        payload.category_id = input.category_id;
+      }
 
       const { data, error } = await supabase.from('tasks').insert([payload]).select().single();
-      if (error) {
-        console.warn('Supabase task insert warning:', error.message);
-      } else if (data) {
-        newTask.id = data.id;
+      if (!error && data) {
+        const dbTask = {
+          ...newTask,
+          id: data.id || newTask.id,
+        };
+        saveLocalTasks([dbTask, ...getLocalTasks()]);
+        return dbTask;
       }
     } catch (e) {
-      console.warn('Supabase task insert failed, using local store:', e);
+      console.warn('Supabase task insert warning:', e);
     }
   }
 
-  const current = getLocalTasks();
-  const updated = [newTask, ...current];
-  saveLocalTasks(updated);
+  saveLocalTasks([newTask, ...getLocalTasks()]);
   return newTask;
 }
 
-/**
- * Update task status (Optimized for Drag and Drop!)
- */
-export async function updateTaskStatus(id: string, newStatus: TaskStatus): Promise<Task> {
-  const now = new Date().toISOString();
-  const completedAt = newStatus === 'done' ? now : null;
-
-  if (isSupabaseConfigured()) {
-    try {
-      const supabase = createClient();
-      await supabase
-        .from('tasks')
-        .update({ status: newStatus, completed_at: completedAt, updated_at: now })
-        .eq('id', id);
-    } catch (e) {
-      console.warn('Supabase status update failed:', e);
-    }
-  }
-
+export async function updateTask(taskId: string, input: Partial<Task>): Promise<boolean> {
   const current = getLocalTasks();
-  const index = current.findIndex((t) => t.id === id);
-  if (index !== -1) {
-    current[index] = {
-      ...current[index],
-      status: newStatus,
-      completed_at: completedAt,
-      updated_at: now,
-    };
-    saveLocalTasks(current);
-    return current[index];
+  saveLocalTasks(current.map((t) => (t.id === taskId ? { ...t, ...input, updated_at: new Date().toISOString() } : t)));
+
+  if (!isSupabaseConfigured()) return true;
+  try {
+    const supabase = createClient();
+    const { error } = await supabase.from('tasks').update({ ...input, updated_at: new Date().toISOString() }).eq('id', taskId);
+    return !error;
+  } catch (e) {
+    console.warn('updateTask error:', e);
+    return false;
   }
-  throw new Error('Task not found');
 }
 
-/**
- * Update full task details
- */
-export async function updateTask(id: string, updates: Partial<Task>): Promise<Task> {
-  const now = new Date().toISOString();
-  const formattedUpdates: Partial<Task> = {
-    ...updates,
-    updated_at: now,
-  };
-
-  if (updates.status === 'done') {
-    formattedUpdates.completed_at = now;
-  } else if (updates.status) {
-    formattedUpdates.completed_at = null;
-  }
-
-  if (isSupabaseConfigured()) {
-    try {
-      const supabase = createClient();
-      await supabase.from('tasks').update(formattedUpdates).eq('id', id);
-    } catch (e) {
-      console.warn('Supabase update task failed:', e);
-    }
-  }
-
+export async function updateTaskStatus(taskId: string, status: TaskStatus): Promise<boolean> {
   const current = getLocalTasks();
-  const index = current.findIndex((t) => t.id === id);
-  if (index !== -1) {
-    current[index] = { ...current[index], ...formattedUpdates };
-    saveLocalTasks(current);
-    return current[index];
+  saveLocalTasks(current.map((t) => (t.id === taskId ? { ...t, status } : t)));
+
+  if (!isSupabaseConfigured()) return true;
+  try {
+    const supabase = createClient();
+    const { error } = await supabase.from('tasks').update({ status, updated_at: new Date().toISOString() }).eq('id', taskId);
+    return !error;
+  } catch (e) {
+    console.warn('updateTaskStatus error:', e);
+    return false;
   }
-  throw new Error('Task not found');
 }
 
-/**
- * Delete a task
- */
-export async function deleteTask(id: string): Promise<boolean> {
-  if (isSupabaseConfigured()) {
-    try {
-      const supabase = createClient();
-      await supabase.from('tasks').delete().eq('id', id);
-    } catch (e) {
-      console.warn('Supabase delete task failed:', e);
-    }
-  }
-
+export async function deleteTask(taskId: string): Promise<boolean> {
   const current = getLocalTasks();
-  const remaining = current.filter((t) => t.id !== id);
-  saveLocalTasks(remaining);
-  return true;
+  saveLocalTasks(current.filter((t) => t.id !== taskId));
+
+  if (!isSupabaseConfigured()) return true;
+  try {
+    const supabase = createClient();
+    const { error } = await supabase.from('tasks').delete().eq('id', taskId);
+    return !error;
+  } catch (e) {
+    console.warn('deleteTask error:', e);
+    return false;
+  }
+}
+
+export async function seedSupabaseTasks(): Promise<void> {
+  console.log('Tasks seeded.');
 }

@@ -48,7 +48,7 @@ CREATE TRIGGER on_auth_user_created
 -- 2. CATEGORIES (Unlimited nesting via parent_id)
 CREATE TABLE IF NOT EXISTS public.categories (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   parent_id UUID REFERENCES public.categories(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   slug TEXT NOT NULL,
@@ -57,8 +57,7 @@ CREATE TABLE IF NOT EXISTS public.categories (
   color TEXT DEFAULT '#6366f1',
   sort_order INT DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE (user_id, parent_id, slug)
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
@@ -131,10 +130,11 @@ CREATE TABLE IF NOT EXISTS public.tasks (
 );
 
 ALTER TABLE public.tasks ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users can manage tasks" ON public.tasks FOR ALL USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users can manage tasks" ON public.tasks;
 CREATE POLICY "Allow public tasks select" ON public.tasks FOR SELECT USING (true);
 CREATE POLICY "Allow public tasks insert" ON public.tasks FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public tasks update" ON public.tasks FOR UPDATE USING (true);
+CREATE POLICY "Allow public tasks delete" ON public.tasks FOR DELETE USING (true);
 
 CREATE TABLE IF NOT EXISTS public.task_checklists (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

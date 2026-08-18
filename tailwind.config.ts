@@ -50,20 +50,11 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       boxShadow: {
-        glow: "0 0 20px -5px rgba(99, 102, 241, 0.4)",
-        "glow-cyan": "0 0 20px -5px rgba(6, 182, 212, 0.4)",
-        "glow-emerald": "0 0 20px -5px rgba(16, 185, 129, 0.4)",
-        glass: "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
-      },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "glass-card":
-          "linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)",
-        "glass-sidebar":
-          "linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%)",
+        soft: "0 2px 10px rgba(0, 0, 0, 0.04)",
+        card: "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+        indigo: "0 8px 25px -5px rgba(99, 102, 241, 0.25)",
       },
       animation: {
-        "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "fade-in": "fadeIn 0.2s ease-in-out forwards",
       },
       keyframes: {

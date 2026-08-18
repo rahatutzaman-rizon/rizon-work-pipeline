@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import * as LucideIcons from 'lucide-react';
 import { LucideProps } from 'lucide-react';
@@ -7,7 +9,17 @@ interface DynamicIconProps extends LucideProps {
 }
 
 export const DynamicIcon = ({ name, ...props }: DynamicIconProps) => {
-  const IconComponent = (LucideIcons as Record<string, any>)[name] || LucideIcons.Folder;
+  const IconComponent =
+    (LucideIcons as Record<string, any>)[name] &&
+    typeof (LucideIcons as Record<string, any>)[name] === 'object' ||
+    typeof (LucideIcons as Record<string, any>)[name] === 'function'
+      ? (LucideIcons as Record<string, any>)[name]
+      : LucideIcons.BookOpen;
+
+  if (typeof IconComponent !== 'function' && typeof IconComponent !== 'object') {
+    return <LucideIcons.BookOpen {...props} />;
+  }
+
   return <IconComponent {...props} />;
 };
 

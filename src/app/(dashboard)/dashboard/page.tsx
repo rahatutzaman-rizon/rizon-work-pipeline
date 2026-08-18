@@ -1,239 +1,183 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {
-  BrainCircuit,
-  FolderPlus,
   Sparkles,
-  BookOpen,
-  CheckSquare,
-  FileText,
-  Bot,
   ArrowRight,
-  TrendingUp,
-  Plus,
-  Edit2,
-  Clock,
-  Layers,
+  Building2,
+  Terminal,
+  Languages,
+  Landmark,
+  ShieldCheck,
+  Zap,
+  Award,
 } from 'lucide-react';
-import { useCategoryStore } from '@/lib/store/category-store';
-import { DynamicIcon } from '@/components/common/IconPicker';
 
 export default function DashboardPage() {
-  const { tree, categories, openCreateModal, openEditModal, loadCategories } = useCategoryStore();
-
-  useEffect(() => {
-    loadCategories();
-  }, [loadCategories]);
-
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
-      {/* Hero Welcome Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-900/40 via-violet-900/30 to-slate-900/60 p-8 border border-indigo-500/20 shadow-2xl">
-        <div className="absolute top-0 right-0 -mt-12 -mr-12 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* HERO BANNER - Rich Parrot Green Glassmorphism */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-950 p-8 sm:p-10 text-white shadow-2xl space-y-6">
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-80 h-80 bg-lime-400/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 -mb-10 w-80 h-80 bg-teal-400/10 rounded-full blur-3xl pointer-events-none" />
+
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-semibold">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Phase 1 — Foundation & Knowledge Graph Active</span>
+          <div className="space-y-3 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-black border border-white/20">
+              <Sparkles className="w-3.5 h-3.5 text-lime-300 animate-pulse" />
+              <span>RIZON Admin Authorized Portal • 4 Modules</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
-              Welcome back to <span className="bg-gradient-to-r from-indigo-400 via-violet-300 to-pink-400 bg-clip-text text-transparent">Rizon Workspace</span>
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+              Master BCS, Bank IT <br />
+              <span className="text-lime-300 font-extrabold">& AI Engineering</span>
             </h1>
-            <p className="text-sm text-slate-300 leading-relaxed">
-              Your personal unified study, knowledge, and task platform. All topics, notes, and AI agent history are interconnected via your central study topic graph.
+            <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed font-medium">
+              Unified workspace for Bangladesh 47th BCS Preliminary, Senior Officer Bank IT exams, Software & AI Automation, and Spoken English/Spanish.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
-            <button
-              onClick={() => openCreateModal(null)}
-              className="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2"
-            >
-              <FolderPlus className="w-4 h-4" />
-              <span>New Category</span>
-            </button>
-            <Link
-              href="/agents/planner"
-              className="px-5 py-3 rounded-2xl bg-slate-900/80 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700 text-sm font-semibold transition-all flex items-center gap-2"
-            >
-              <Bot className="w-4 h-4 text-violet-400" />
-              <span>Study Planner</span>
-            </Link>
+          <div className="p-5 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl space-y-2 shrink-0 text-right min-w-[200px]">
+            <span className="text-[10px] font-black uppercase text-emerald-200 tracking-wider">Portal Access Status</span>
+            <div className="text-2xl font-black text-lime-300 flex items-center justify-end gap-1.5">
+              <Award className="w-6 h-6 text-lime-400" />
+              <span>Authenticated</span>
+            </div>
+            <span className="text-xs font-bold text-emerald-100 block flex items-center justify-end gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-lime-400" /> Password Protected
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Metrics Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="p-6 rounded-2xl glass-panel glass-panel-hover border border-slate-800 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400">Total Categories</span>
-            <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
-              <Layers className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <span className="text-3xl font-extrabold text-white">{categories.length}</span>
-            <span className="text-xs text-indigo-400 font-medium">Nested tree ready</span>
-          </div>
-        </div>
-
-        <div className="p-6 rounded-2xl glass-panel glass-panel-hover border border-slate-800 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400">Active Tasks</span>
-            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
-              <CheckSquare className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <span className="text-3xl font-extrabold text-white">12</span>
-            <span className="text-xs text-emerald-400 font-medium">3 completed today</span>
-          </div>
-        </div>
-
-        <div className="p-6 rounded-2xl glass-panel glass-panel-hover border border-slate-800 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400">Knowledge Notes</span>
-            <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400">
-              <BookOpen className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <span className="text-3xl font-extrabold text-white">24</span>
-            <span className="text-xs text-cyan-400 font-medium">Linked to topics</span>
-          </div>
-        </div>
-
-        <div className="p-6 rounded-2xl glass-panel glass-panel-hover border border-slate-800 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400">Daily Study Target</span>
-            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400">
-              <Clock className="w-5 h-5" />
-            </div>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <span className="text-3xl font-extrabold text-white">1.5 / 2.0h</span>
-            <span className="text-xs text-amber-400 font-medium">75% achieved</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content Grid: Study Topics & Domains */}
+      {/* 4 TOP-LEVEL MODULE CARDS GRID */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-white tracking-tight">Study Topics & Categories</h2>
-            <p className="text-xs text-slate-400">
-              Hierarchical knowledge domains with unlimited parent-child nesting support.
-            </p>
-          </div>
-          <button
-            onClick={() => openCreateModal(null)}
-            className="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-xs font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1.5"
-          >
-            <Plus className="w-4 h-4 text-indigo-400" />
-            <span>Add Root Domain</span>
-          </button>
+          <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+            <Zap className="w-5 h-5 text-emerald-600" />
+            <span>4 Primary Study & Career Modules</span>
+          </h2>
+          <span className="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+            Click Module to Open Workspace & Take Exam
+          </span>
         </div>
 
-        {/* Categories Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {tree.map((node) => {
-            const childrenCount = node.children ? node.children.length : 0;
-            return (
-              <div
-                key={node.id}
-                className="group relative rounded-2xl glass-panel glass-panel-hover p-6 border border-slate-800 flex flex-col justify-between space-y-4"
-              >
-                {/* Card Top Header */}
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="p-3 rounded-2xl text-white flex items-center justify-center shadow-lg"
-                      style={{ backgroundColor: node.color || '#6366f1' }}
-                    >
-                      <DynamicIcon name={node.icon || 'Folder'} className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <Link href={`/study/${node.slug}`}>
-                        <h3 className="text-base font-bold text-white group-hover:text-indigo-300 transition-colors">
-                          {node.name}
-                        </h3>
-                      </Link>
-                      <p className="text-xs text-slate-400">
-                        {childrenCount} sub-{childrenCount === 1 ? 'category' : 'categories'}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => openCreateModal(node.id)}
-                      title="Add Sub-category"
-                      className="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-slate-800 rounded-lg transition-colors"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => openEditModal(node)}
-                      title="Edit Category"
-                      className="p-1.5 text-slate-400 hover:text-amber-400 hover:bg-slate-800 rounded-lg transition-colors"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <p className="text-xs text-slate-400 line-clamp-2 min-h-[32px]">
-                  {node.description || 'No description provided for this study category.'}
-                </p>
-
-                {/* Sub-categories Preview Badges */}
-                {childrenCount > 0 && (
-                  <div className="space-y-1.5 pt-2 border-t border-slate-800/80">
-                    <span className="text-[10px] uppercase font-semibold text-slate-500 tracking-wider">
-                      Nested Domains
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {node.children.slice(0, 3).map((sub) => (
-                        <Link
-                          key={sub.id}
-                          href={`/study/${sub.slug}`}
-                          className="px-2.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-[11px] text-slate-300 hover:text-indigo-300 transition-colors flex items-center gap-1.5"
-                        >
-                          <span
-                            className="w-2 h-2 rounded-full"
-                            style={{ backgroundColor: sub.color || '#6366f1' }}
-                          />
-                          <span>{sub.name}</span>
-                        </Link>
-                      ))}
-                      {childrenCount > 3 && (
-                        <span className="px-2 py-1 rounded-lg bg-slate-900 text-[10px] text-slate-500">
-                          +{childrenCount - 3} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Card Footer Link */}
-                <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
-                  <span className="text-slate-400 font-medium">Progress</span>
-                  <Link
-                    href={`/study/${node.slug}`}
-                    className="text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1 transition-colors"
-                  >
-                    <span>Open Domain</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Module 1: BCS Preliminary */}
+          <Link
+            href="/bcs"
+            className="p-8 rounded-3xl bg-gradient-to-br from-white via-emerald-50/30 to-emerald-100/40 border-2 border-emerald-200 hover:border-emerald-500 shadow-md hover:shadow-2xl transition-all duration-300 group space-y-5 relative overflow-hidden"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <Landmark className="w-7 h-7" />
               </div>
-            );
-          })}
+              <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-600 text-white shadow-xs uppercase tracking-wider">
+                10 Subjects • 200 Marks
+              </span>
+            </div>
+
+            <div className="space-y-1.5">
+              <h3 className="text-2xl font-black text-slate-900 group-hover:text-emerald-700 transition-colors">
+                1. BCS Preliminary Hub
+              </h3>
+              <p className="text-xs font-semibold text-slate-600 leading-relaxed">
+                Official BPSC Syllabus breakdown (Bangla, English, BD Affairs, Int Affairs, Science, Computer, Math, Mental Ability, Ethics). Includes Prelim & Written Model Tests.
+              </p>
+            </div>
+
+            <div className="pt-4 border-t border-emerald-100 flex items-center justify-between text-xs font-black text-emerald-700 group-hover:text-emerald-800">
+              <span>Open 10-Subject Workspace & Model Tests</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
+
+          {/* Module 2: Bank IT / ICT Jobs */}
+          <Link
+            href="/bank-it"
+            className="p-8 rounded-3xl bg-gradient-to-br from-white via-teal-50/30 to-teal-100/40 border-2 border-teal-200 hover:border-teal-500 shadow-md hover:shadow-2xl transition-all duration-300 group space-y-5 relative overflow-hidden"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-teal-600 to-emerald-700 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <Building2 className="w-7 h-7" />
+              </div>
+              <span className="px-3 py-1 rounded-full text-xs font-black bg-teal-700 text-white shadow-xs uppercase tracking-wider">
+                Senior Officer IT
+              </span>
+            </div>
+
+            <div className="space-y-1.5">
+              <h3 className="text-2xl font-black text-slate-900 group-hover:text-teal-700 transition-colors">
+                2. Bank IT & ICT Jobs
+              </h3>
+              <p className="text-xs font-semibold text-slate-600 leading-relaxed">
+                Targeted preparation for Senior Officer IT, System Analyst, Programmer (Computer Fundamentals, OS, SQL, Networking, Cyber Security).
+              </p>
+            </div>
+
+            <div className="pt-4 border-t border-teal-100 flex items-center justify-between text-xs font-black text-teal-700 group-hover:text-teal-800">
+              <span>Open Technical Exam Breakdown</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
+
+          {/* Module 3: Software Engineering & AI */}
+          <Link
+            href="/software-ai"
+            className="p-8 rounded-3xl bg-gradient-to-br from-white via-sky-50/30 to-blue-100/40 border-2 border-sky-200 hover:border-sky-500 shadow-md hover:shadow-2xl transition-all duration-300 group space-y-5 relative overflow-hidden"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-600 to-indigo-800 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <Terminal className="w-7 h-7" />
+              </div>
+              <span className="px-3 py-1 rounded-full text-xs font-black bg-sky-700 text-white shadow-xs uppercase tracking-wider">
+                RAG • n8n • SaaS
+              </span>
+            </div>
+
+            <div className="space-y-1.5">
+              <h3 className="text-2xl font-black text-slate-900 group-hover:text-sky-700 transition-colors">
+                3. Software & AI Engineering
+              </h3>
+              <p className="text-xs font-semibold text-slate-600 leading-relaxed">
+                Full Stack & AI Automation portfolio for Rahatutzaman Rizon (System Design, Next.js/Node.js, Docker CI/CD, n8n, AI Agents).
+              </p>
+            </div>
+
+            <div className="pt-4 border-t border-sky-100 flex items-center justify-between text-xs font-black text-sky-700 group-hover:text-sky-800">
+              <span>Open Engineering Portfolio & Tech Quiz</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
+
+          {/* Module 4: English & Spanish Speaking */}
+          <Link
+            href="/languages"
+            className="p-8 rounded-3xl bg-gradient-to-br from-white via-lime-50/30 to-emerald-100/40 border-2 border-lime-300 hover:border-lime-500 shadow-md hover:shadow-2xl transition-all duration-300 group space-y-5 relative overflow-hidden"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-lime-600 to-emerald-600 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                <Languages className="w-7 h-7" />
+              </div>
+              <span className="px-3 py-1 rounded-full text-xs font-black bg-lime-600 text-white shadow-xs uppercase tracking-wider">
+                Audio Cards & AI Tutor
+              </span>
+            </div>
+
+            <div className="space-y-1.5">
+              <h3 className="text-2xl font-black text-slate-900 group-hover:text-lime-700 transition-colors">
+                4. Spoken English & Spanish
+              </h3>
+              <p className="text-xs font-semibold text-slate-600 leading-relaxed">
+                Interactive audio flashcards, speech pronunciation player, writing grammar corrector, and live AI tutor chat.
+              </p>
+            </div>
+
+            <div className="pt-4 border-t border-lime-100 flex items-center justify-between text-xs font-black text-lime-700 group-hover:text-lime-800">
+              <span>Open Spoken Language Coach</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
         </div>
       </div>
     </div>

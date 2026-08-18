@@ -1,19 +1,37 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { Plus, Search, FolderPlus } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Plus, FolderPlus, RefreshCw, BookOpen } from 'lucide-react';
 import { useCategoryStore } from '@/lib/store/category-store';
+import { seedSupabaseCategories } from '@/lib/supabase/db';
 import { CategoryTreeItem } from './CategoryTreeItem';
 
 export const CategoryTree: React.FC = () => {
-  const { tree, categories, searchQuery, setSearchQuery, openCreateModal, loadCategories } =
+  const { tree, categories, searchQuery, openCreateModal, loadCategories, toggleExpand, expandedIds } =
     useCategoryStore();
+  const [isSeeding, setIsSeeding] = useState(false);
 
   useEffect(() => {
     loadCategories();
   }, [loadCategories]);
 
-  // Filter tree based on search query if present
+  useEffect(() => {
+    if (tree.length > 0 && expandedIds.size === 0) {
+      tree.forEach((node) => {
+        if (node.children && node.children.length > 0) {
+          toggleExpand(node.id);
+        }
+      });
+    }
+  }, [tree]);
+
+  const handleSeed = async () => {
+    setIsSeeding(true);
+    await seedSupabaseCategories();
+    await loadCategories();
+    setIsSeeding(false);
+  };
+
   const filteredCategories = searchQuery
     ? categories.filter(
         (c) =>
@@ -25,22 +43,33 @@ export const CategoryTree: React.FC = () => {
   return (
     <div className="space-y-2">
       {/* Header & Add Button */}
-      <div className="flex items-center justify-between px-2 py-1">
-        <span className="text-[11px] font-semibold tracking-wider text-slate-400 uppercase">
-          Study Topics & Domains
+      <div className="flex items-center justify-between px-2.5 py-1">
+        <span className="text-[11px] font-extrabold tracking-wider text-emerald-800 uppercase flex items-center gap-1">
+          <BookOpen className="w-3 h-3 text-emerald-600" />
+          <span>Exam Subjects ({categories.length})</span>
         </span>
-        <button
-          onClick={() => openCreateModal(null)}
-          title="Add Root Category"
-          className="p-1 text-slate-400 hover:text-indigo-400 hover:bg-slate-800 rounded-md transition-colors flex items-center gap-1 text-[11px]"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          <span>New</span>
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={handleSeed}
+            disabled={isSeeding}
+            title="Sync Default Subjects to Database"
+            className="p-1 text-emerald-600 hover:text-emerald-900 hover:bg-emerald-50 rounded-md transition-colors text-[11px]"
+          >
+            <RefreshCw className={`w-3 h-3 ${isSeeding ? 'animate-spin' : ''}`} />
+          </button>
+          <button
+            onClick={() => openCreateModal(null)}
+            title="Add New Subject"
+            className="p-1 text-emerald-800 hover:text-emerald-950 hover:bg-emerald-100/70 rounded-md transition-colors flex items-center gap-1 text-[11px] font-bold"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>New</span>
+          </button>
+        </div>
       </div>
 
       {/* Categories Tree */}
-      <div className="space-y-0.5 max-h-[360px] overflow-y-auto pr-1">
+      <div className="space-y-0.5 pr-1">
         {filteredCategories ? (
           filteredCategories.length > 0 ? (
             filteredCategories.map((cat) => (
@@ -51,19 +80,20 @@ export const CategoryTree: React.FC = () => {
               />
             ))
           ) : (
-            <p className="px-3 py-2 text-xs text-slate-500 italic">No categories found</p>
+            <p className="px-3 py-2 text-xs text-slate-400 italic">No subjects found</p>
           )
         ) : tree.length > 0 ? (
           tree.map((node) => <CategoryTreeItem key={node.id} node={node} depth={0} />)
         ) : (
-          <div className="p-3 text-center rounded-xl bg-slate-900/50 border border-slate-800">
-            <p className="text-xs text-slate-400 mb-2">No categories created yet</p>
+          <div className="p-3 text-center rounded-xl bg-emerald-50 border border-emerald-200 space-y-2">
+            <p className="text-xs text-emerald-800 font-medium">No exam subjects loaded</p>
             <button
-              onClick={() => openCreateModal(null)}
-              className="px-3 py-1.5 rounded-lg text-xs bg-indigo-600 text-white hover:bg-indigo-500 inline-flex items-center gap-1.5"
+              onClick={handleSeed}
+              disabled={isSeeding}
+              className="px-3 py-1.5 rounded-lg text-xs bg-emerald-600 text-white hover:bg-emerald-700 font-bold inline-flex items-center gap-1.5 shadow-xs"
             >
               <FolderPlus className="w-3.5 h-3.5" />
-              <span>Create First Category</span>
+              <span>{isSeeding ? 'Syncing...' : 'Load Default BCS Subjects'}</span>
             </button>
           </div>
         )}
@@ -71,3 +101,4 @@ export const CategoryTree: React.FC = () => {
     </div>
   );
 };
+
