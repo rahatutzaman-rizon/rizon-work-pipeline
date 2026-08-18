@@ -5,7 +5,6 @@ import {
   Lock,
   KeyRound,
   ShieldCheck,
-  Sparkles,
   ArrowRight,
   Eye,
   EyeOff,
@@ -19,7 +18,6 @@ import {
 import {
   isModuleUnlocked,
   unlockModuleWithPasscode,
-  DEFAULT_MODULE_PASSCODES,
   MODULE_NAMES,
 } from '@/lib/module-auth';
 
@@ -49,7 +47,6 @@ export const ModuleAuthGuard: React.FC<ModuleAuthGuardProps> = ({ moduleKey, chi
   };
 
   const IconComp = MODULE_ICONS[moduleKey] || GraduationCap;
-  const defaultCode = DEFAULT_MODULE_PASSCODES[moduleKey] || '1234';
 
   useEffect(() => {
     const isGranted = isModuleUnlocked(moduleKey);
@@ -69,7 +66,7 @@ export const ModuleAuthGuard: React.FC<ModuleAuthGuardProps> = ({ moduleKey, chi
       setErrorMsg('');
       setUnlocked(true);
     } else {
-      setErrorMsg(`Invalid passcode. Hint: Use default passcode '${defaultCode}' or 'admin'`);
+      setErrorMsg('Invalid passcode. Access denied.');
     }
   };
 
@@ -122,7 +119,7 @@ export const ModuleAuthGuard: React.FC<ModuleAuthGuardProps> = ({ moduleKey, chi
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
-                placeholder={`Enter passcode (Default: ${defaultCode})`}
+                placeholder="Enter passcode..."
                 value={passcode}
                 onChange={(e) => {
                   setPasscode(e.target.value);
@@ -157,9 +154,9 @@ export const ModuleAuthGuard: React.FC<ModuleAuthGuardProps> = ({ moduleKey, chi
             <ArrowRight className="w-4 h-4 text-slate-950 group-hover:translate-x-1 transition-transform" />
           </button>
 
-          {/* Quick Demo Hint */}
-          <div className="pt-2 text-center text-[10px] text-slate-400 border-t border-white/10 font-mono">
-            💡 Module Passcode: <span className="text-emerald-300 font-bold">{defaultCode}</span> or <span className="text-emerald-300 font-bold">admin</span>
+          <div className="pt-2 text-center text-[10px] text-slate-400 border-t border-white/10 font-sans flex items-center justify-center gap-1">
+            <ShieldCheck className="w-3 h-3 text-emerald-400" />
+            <span>Secure Access Module</span>
           </div>
         </form>
       </div>

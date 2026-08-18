@@ -5,7 +5,6 @@ import {
   Lock,
   KeyRound,
   ShieldCheck,
-  Sparkles,
   ArrowRight,
   Eye,
   EyeOff,
@@ -15,7 +14,6 @@ import {
 import {
   isGlobalAdminAuthenticated,
   authenticateGlobalAdmin,
-  GLOBAL_ADMIN_PASSWORD,
 } from '@/lib/global-auth';
 
 interface GlobalAppAuthGuardProps {
@@ -47,7 +45,7 @@ export const GlobalAppAuthGuard: React.FC<GlobalAppAuthGuardProps> = ({ children
       setErrorMsg('');
       setAuthenticated(true);
     } else {
-      setErrorMsg(`Invalid password. Password is '${GLOBAL_ADMIN_PASSWORD}'`);
+      setErrorMsg('Invalid password. Access denied.');
     }
   };
 
@@ -99,7 +97,7 @@ export const GlobalAppAuthGuard: React.FC<GlobalAppAuthGuardProps> = ({ children
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
-                placeholder={`Enter password (Default: ${GLOBAL_ADMIN_PASSWORD})`}
+                placeholder="Enter access password..."
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
@@ -134,9 +132,10 @@ export const GlobalAppAuthGuard: React.FC<GlobalAppAuthGuardProps> = ({ children
             <ArrowRight className="w-4 h-4 text-slate-950 group-hover:translate-x-1 transition-transform" />
           </button>
 
-          {/* Hint */}
-          <div className="pt-3 text-center text-xs text-slate-400 border-t border-slate-800 font-mono">
-            🔑 Access Password: <span className="text-emerald-400 font-extrabold">{GLOBAL_ADMIN_PASSWORD}</span>
+          {/* Security Badge Footer */}
+          <div className="pt-3 text-center text-xs text-slate-400 border-t border-slate-800 flex items-center justify-center gap-1.5 font-sans">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Protected Enterprise Portal • Encrypted Auth Session</span>
           </div>
         </form>
       </div>
