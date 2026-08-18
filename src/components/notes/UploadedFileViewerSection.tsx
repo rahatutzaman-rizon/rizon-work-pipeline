@@ -212,6 +212,7 @@ export const UploadedFileViewerSection: React.FC<UploadedFileViewerSectionProps>
                   <img
                     src={img.url}
                     alt={img.name}
+                    loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white">
@@ -299,54 +300,60 @@ export const UploadedFileViewerSection: React.FC<UploadedFileViewerSectionProps>
 
       {/* FULLSCREEN LIGHTBOX MODAL WITH EXTRA CONTROLS */}
       {selectedImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/90 backdrop-blur-md animate-fade-in">
-          <div className="relative w-full max-w-5xl h-[85vh] bg-slate-900 rounded-3xl border border-slate-700 shadow-2xl overflow-hidden flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 bg-slate-950/90 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-5xl h-[92vh] sm:h-[85vh] bg-slate-900 rounded-3xl border border-slate-700 shadow-2xl overflow-hidden flex flex-col">
             {/* Lightbox Top Header */}
-            <div className="p-4 bg-slate-950 text-white flex items-center justify-between gap-4 border-b border-slate-800 shrink-0">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400">
-                  <ImageIcon className="w-5 h-5" />
+            <div className="p-3 sm:p-4 bg-slate-950 text-white flex items-center justify-between gap-2 sm:gap-4 border-b border-slate-800 shrink-0">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                <div className="p-1.5 sm:p-2 rounded-xl bg-emerald-500/20 text-emerald-400 shrink-0">
+                  <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-sm font-extrabold text-white truncate">{selectedImage.name}</h3>
-                  <p className="text-[11px] text-slate-400 font-mono">
+                  <h3 className="text-xs sm:text-sm font-extrabold text-white truncate">{selectedImage.name}</h3>
+                  <p className="text-[10px] text-slate-400 font-mono truncate hidden sm:block">
                     Image Inspection Lightbox • Interactive Extra Section
                   </p>
                 </div>
               </div>
 
               {/* Top Controls */}
-              <div className="flex items-center gap-2 shrink-0">
-                <div className="flex items-center bg-slate-800 rounded-xl p-1 border border-slate-700">
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                <div className="flex items-center bg-slate-800 rounded-xl p-0.5 sm:p-1 border border-slate-700">
                   <button
                     onClick={() => setZoomLevel((z) => Math.max(0.5, z - 0.25))}
-                    className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
+                    className="p-1 sm:p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
                     title="Zoom Out"
                   >
-                    <ZoomOut className="w-4 h-4" />
+                    <ZoomOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </button>
-                  <span className="px-2 text-xs font-mono font-bold text-emerald-400">{Math.round(zoomLevel * 100)}%</span>
+                  <button
+                    onClick={() => setZoomLevel(1)}
+                    className="px-1.5 text-[10px] sm:text-xs font-mono font-bold text-emerald-400 hover:underline"
+                    title="Reset Zoom"
+                  >
+                    {Math.round(zoomLevel * 100)}%
+                  </button>
                   <button
                     onClick={() => setZoomLevel((z) => Math.min(3, z + 0.25))}
-                    className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
+                    className="p-1 sm:p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
                     title="Zoom In"
                   >
-                    <ZoomIn className="w-4 h-4" />
+                    <ZoomIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </button>
                   <button
                     onClick={() => setRotation((r) => (r + 90) % 360)}
-                    className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors ml-1"
+                    className="p-1 sm:p-1.5 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg transition-colors ml-0.5"
                     title="Rotate Image"
                   >
-                    <RotateCw className="w-4 h-4" />
+                    <RotateCw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </button>
                 </div>
 
                 <button
                   onClick={() => handleDownload(selectedImage.url, selectedImage.name)}
-                  className="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold transition-colors flex items-center gap-1.5"
+                  className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold transition-colors flex items-center gap-1"
                 >
-                  <Download className="w-4 h-4" />
+                  <Download className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Download</span>
                 </button>
 
@@ -356,17 +363,17 @@ export const UploadedFileViewerSection: React.FC<UploadedFileViewerSectionProps>
                     setZoomLevel(1);
                     setRotation(0);
                   }}
-                  className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white transition-colors"
+                  className="p-1.5 sm:p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white transition-colors"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               </div>
             </div>
 
             {/* Lightbox Main Image & Extra Details Workspace */}
-            <div className="flex-1 overflow-hidden grid grid-cols-1 lg:grid-cols-12 bg-slate-950">
+            <div className="flex-1 overflow-y-auto lg:overflow-hidden grid grid-cols-1 lg:grid-cols-12 bg-slate-950">
               {/* Image View Stage (8 cols) */}
-              <div className="lg:col-span-8 relative flex items-center justify-center p-6 bg-black/60 overflow-auto">
+              <div className="lg:col-span-8 relative flex items-center justify-center p-4 sm:p-6 bg-black/60 min-h-[300px] overflow-auto">
                 <div
                   className="transition-transform duration-200 max-w-full max-h-full flex items-center justify-center"
                   style={{
@@ -376,7 +383,8 @@ export const UploadedFileViewerSection: React.FC<UploadedFileViewerSectionProps>
                   <img
                     src={selectedImage.url}
                     alt={selectedImage.name}
-                    className="max-w-full max-h-[65vh] object-contain rounded-xl shadow-2xl"
+                    loading="lazy"
+                    className="max-w-full max-h-[50vh] sm:max-h-[65vh] object-contain rounded-xl shadow-2xl"
                   />
                 </div>
               </div>
