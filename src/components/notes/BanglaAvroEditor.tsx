@@ -258,7 +258,7 @@ export const BanglaAvroEditor: React.FC<BanglaAvroEditorProps> = ({
       {/* KEYBOARD DRAWER */}
       {showKeyboard && (
         <div className="p-4 bg-emerald-50/60 border-t border-emerald-100 space-y-2.5">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <span className="text-[11px] font-extrabold uppercase text-emerald-950 flex items-center gap-1.5">
               <Keyboard className="w-3.5 h-3.5 text-emerald-600" />
               <span>Bangla Soft Keyboard</span>

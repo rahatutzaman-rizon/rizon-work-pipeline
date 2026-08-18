@@ -17,8 +17,8 @@ import {
 export default function DashboardPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
-      {/* HERO BANNER - Rich Parrot Green Glassmorphism */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-950 p-8 sm:p-10 text-white shadow-2xl space-y-6">
+      {/* HERO BANNER - Rich Glassmorphism */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-950 p-5 sm:p-8 lg:p-10 text-white shadow-2xl space-y-6">
         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-80 h-80 bg-lime-400/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-1/3 -mb-10 w-80 h-80 bg-teal-400/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -26,9 +26,9 @@ export default function DashboardPage() {
           <div className="space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-black border border-white/20">
               <Sparkles className="w-3.5 h-3.5 text-lime-300 animate-pulse" />
-              <span>RIZON Admin Authorized Portal • 4 Modules</span>
+              <span>RIZON Authorized Portal • 4 Modules</span>
             </div>
-            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
               Master BCS, Bank IT <br />
               <span className="text-lime-300 font-extrabold">& AI Engineering</span>
             </h1>
@@ -37,14 +37,14 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div className="p-5 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl space-y-2 shrink-0 text-right min-w-[200px]">
+          <div className="p-4 sm:p-5 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl space-y-2 shrink-0 text-left md:text-right w-full md:w-auto min-w-[200px]">
             <span className="text-[10px] font-black uppercase text-emerald-200 tracking-wider">Portal Access Status</span>
-            <div className="text-2xl font-black text-lime-300 flex items-center justify-end gap-1.5">
-              <Award className="w-6 h-6 text-lime-400" />
+            <div className="text-xl sm:text-2xl font-black text-lime-300 flex items-center justify-start md:justify-end gap-1.5">
+              <Award className="w-5 h-5 sm:w-6 sm:h-6 text-lime-400" />
               <span>Authenticated</span>
             </div>
-            <span className="text-xs font-bold text-emerald-100 block flex items-center justify-end gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-lime-400" /> Password Protected
+            <span className="text-xs font-bold text-emerald-100 flex items-center justify-start md:justify-end gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-lime-400" /> Protected Portal
             </span>
           </div>
         </div>
@@ -52,8 +52,8 @@ export default function DashboardPage() {
 
       {/* 4 TOP-LEVEL MODULE CARDS GRID */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <h2 className="text-lg sm:text-xl font-black text-slate-900 flex items-center gap-2">
             <Zap className="w-5 h-5 text-emerald-600" />
             <span>4 Primary Study & Career Modules</span>
           </h2>

@@ -91,7 +91,7 @@ export default function SoftwareAiHubPage() {
               {loading ? (
                 <div className="p-12 text-center text-slate-500 font-bold">Loading Engineering Modules...</div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                   {subjects.map((sub) => (
                     <Link
                       key={sub.id}

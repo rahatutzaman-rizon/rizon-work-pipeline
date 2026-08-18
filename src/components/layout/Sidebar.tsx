@@ -234,12 +234,12 @@ export const Sidebar: React.FC = () => {
   return (
     <>
       {/* Mobile Top Navbar Bar (Visible on screens < md) */}
-      <div className="md:hidden sticky top-0 z-40 bg-white border-b border-emerald-100 px-4 py-3 flex items-center justify-between shadow-xs">
+      <div className="md:hidden sticky top-0 z-40 bg-white border-b border-emerald-100 px-4 py-3 flex items-center justify-between shadow-xs w-full shrink-0">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-xs">
-            BCS
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-600 text-white flex items-center justify-center font-black text-xs shadow-sm">
+            RZ
           </div>
-          <span className="font-extrabold text-sm text-slate-900">RIZON BCS Exam Portal</span>
+          <span className="font-extrabold text-sm text-slate-900">RIZON Knowledge Portal</span>
         </Link>
 
         <button

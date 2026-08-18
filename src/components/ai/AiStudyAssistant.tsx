@@ -301,7 +301,7 @@ Practice repeating aloud 10 minutes every morning to build natural conversationa
           {isGenerating && (
             <div className="flex gap-3 items-center text-xs text-emerald-700 font-bold bg-emerald-50 p-3 rounded-2xl w-fit animate-pulse">
               <Bot className="w-4 h-4 text-emerald-600 animate-spin" />
-              <span>AI is generating structured BCS / Bank / IT study notes...</span>
+              <span>AI is generating structured study notes...</span>
             </div>
           )}
         </div>

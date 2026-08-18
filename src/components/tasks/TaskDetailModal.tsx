@@ -63,8 +63,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, onClose,
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-3xl border border-emerald-200 shadow-2xl overflow-hidden flex flex-col animate-slide-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+      <div className="relative w-full max-w-2xl max-h-[92vh] sm:max-h-[90vh] bg-white rounded-3xl border border-emerald-200 shadow-2xl overflow-hidden flex flex-col animate-slide-in">
         {/* Header Bar */}
         <div className="p-5 sm:p-6 bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-900 text-white flex items-start justify-between gap-4 shrink-0">
           <div className="space-y-1.5 flex-1 min-w-0">

@@ -89,17 +89,18 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({ tasks }) => {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
+      <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-5 items-start overflow-x-auto pb-4 md:pb-0 snap-x snap-mandatory">
         {COLUMNS.map((col) => {
           const colTasks = tasks.filter((t) => t.status === col.id);
           return (
-            <KanbanColumn
-              key={col.id}
-              id={col.id}
-              title={col.title}
-              tasks={colTasks}
-              accentColor={col.accentColor}
-            />
+            <div key={col.id} className="min-w-[280px] sm:min-w-[320px] md:min-w-0 flex-1 snap-center">
+              <KanbanColumn
+                id={col.id}
+                title={col.title}
+                tasks={colTasks}
+                accentColor={col.accentColor}
+              />
+            </div>
           );
         })}
       </div>
