@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, Bell, Sparkles, Plus, Command, Home, ChevronRight, BookOpen, Lock } from 'lucide-react';
+import { Search, Bell, Sparkles, Plus, Command, Home, ChevronRight, BookOpen, Lock, FileDown } from 'lucide-react';
 import { useCategoryStore } from '@/lib/store/category-store';
 import { logoutGlobalAdmin } from '@/lib/global-auth';
 
@@ -60,6 +60,17 @@ export const Header: React.FC = () => {
           <Plus className="w-3.5 h-3.5" />
           <span>New Subject</span>
         </button>
+
+        {/* PDF Testing Report Download Button */}
+        <a
+          href="/api/report/pdf"
+          download="RIZON_Full_System_Testing_Report.pdf"
+          className="px-3 py-1.5 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs"
+          title="Download Full Testing Report (PDF)"
+        >
+          <FileDown className="w-3.5 h-3.5 text-teal-600" />
+          <span className="hidden lg:inline">PDF Test Report</span>
+        </a>
 
         {/* Lock Portal Button */}
         <button
