@@ -149,7 +149,7 @@ export const NotesManager: React.FC = () => {
             <span>Bangla Note Base & Subject Repository</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            BCS & Job Prep <span className="text-emerald-200">Study Notes</span>
+            RIZON <span className="text-emerald-200">Study Notes</span>
           </h1>
           <p className="text-xs text-emerald-100 max-w-xl leading-relaxed">
             Write Bangla text, attach diagrams, upload circular images, and view embedded PDFs directly alongside your notes.

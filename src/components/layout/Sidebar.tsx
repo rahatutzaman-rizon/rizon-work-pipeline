@@ -110,7 +110,7 @@ export const Sidebar: React.FC = () => {
           </div>
           <div>
             <h1 className="font-extrabold text-base tracking-tight text-slate-900">
-              RIZON <span className="text-emerald-600 font-bold text-xs">BCS & Job Prep</span>
+              RIZON <span className="text-emerald-600 font-bold text-xs">Knowledge Portal</span>
             </h1>
             <p className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />

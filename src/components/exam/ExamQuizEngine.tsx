@@ -24,7 +24,7 @@ interface ExamQuizEngineProps {
 
 export const ExamQuizEngine: React.FC<ExamQuizEngineProps> = ({
   categoryId,
-  categoryName = 'BCS & Job Exam',
+  categoryName = 'Interactive Exam',
 }) => {
   const [examMode, setExamMode] = useState<'MCQ' | 'Written'>('MCQ');
 

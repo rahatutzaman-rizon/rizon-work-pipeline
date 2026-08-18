@@ -57,7 +57,7 @@ export const AiStudyAssistant: React.FC = () => {
     {
       id: 'welcome-1',
       sender: 'ai',
-      text: `Hello! I am your **Rizon BCS & Job Prep AI Study Assistant** 🎓
+      text: `Hello! I am your **Rizon AI Study Assistant** 🎓
 
 I can help you:
 1. **Auto-Generate Study Notes** for BCS, Bank Exams, IT Software Automation, English & Spanish.
@@ -206,7 +206,7 @@ Practice repeating aloud 10 minutes every morning to build natural conversationa
             <span>AI Automated Study & DB Saver Active</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            BCS & Job Prep <span className="text-emerald-200">AI Assistant</span>
+            RIZON <span className="text-emerald-200">AI Assistant</span>
           </h1>
           <p className="text-xs text-emerald-100 max-w-lg leading-relaxed">
             Auto-generate study notes in Bangla/English for BCS, Bank Math, IT Automation, and Languages. 1-click save directly into your database.

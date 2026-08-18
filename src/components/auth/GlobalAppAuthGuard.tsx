@@ -79,7 +79,7 @@ export const GlobalAppAuthGuard: React.FC<GlobalAppAuthGuardProps> = ({ children
               <span>Admin & Candidate Portal Guard</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-              RIZON <span className="text-emerald-400">BCS & Job Prep</span>
+              RIZON <span className="text-emerald-400">Knowledge Platform</span>
             </h1>
             <p className="text-xs text-slate-300 mt-1">
               Please enter access password to unlock the workspace
